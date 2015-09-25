@@ -1,0 +1,84 @@
+---
+title       : Titanic App
+subtitle    : Project for Coursera Developing Data Products
+author      : Lik Sin
+job         : Coursera Participant
+framework   : io2012   # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+
+## Titanic App
+
+Choose your economic status (class), sex and age.  
+This application will tell you if you have survived the Titanic.  
+<div style='text-align: center;'>
+    <img height='450' src='Projectapp.jpg' />
+</div>
+
+--- .class #id 
+
+## Instructions
+
+1. Go to  https://liksin.shinyapps.io/Project
+2. Wait for the app to load. App is ready when input parameters at the main panel shows user selection.
+3. Select your economic status (class) on the side panel
+4. Select your gender on the side panel
+5. Select your age on the side panel
+6. On the 'Input parameters' tab of the main panel, check that your selections are correct
+7. Based on your selected parameters, the app run them against a random forest prediction model and  generate your survivability
+8. Check out the 'Server calculations and outputs' tab for details on the cross validation of the prediction model
+9. Check out 'Documentation and Codes' tab for instructions and full documentation of the code used
+
+--- .class #id
+
+## How it works
+
+* Data from Titanic dataset is first pre-processed
+
+
+
+```r
+data=data.frame(Titanic)
+flatdata=NULL
+for(i in 1:4)
+{
+    flatdata=cbind(flatdata,rep(as.character(data[,i]),data$Freq))
+}
+flatdata=data.frame(flatdata)
+names(flatdata)=names(data[1:4])
+```
+* And split into training and test data sets
+
+```r
+set.seed(150)
+inTrain = createDataPartition(flatdata$Survived, p = 0.70,list=FALSE)
+trainingset = flatdata[inTrain,]
+testset = flatdata[-inTrain,]
+```
+
+--- .class #id
+
+## Modelling and results
+* Generating random forest prediction model
+
+```r
+modFit=train(Survived ~ ., data=trainingset, model="rf")
+```
+* Applying prediction model to test data set
+
+```r
+predval <- predict(modFit, newdata=testset)
+table(predval,testset$Survived)
+```
+
+```
+##        
+## predval  No Yes
+##     No  439 130
+##     Yes   8  83
+```

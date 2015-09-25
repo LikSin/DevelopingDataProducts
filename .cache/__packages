@@ -1,0 +1,7 @@
+base
+shiny
+lattice
+ggplot2
+caret
+randomForest
+e1071

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Titanic App</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Titanic App">
+  <meta name="author" content="Lik Sin">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Titanic App</h1>
+    <h2>Project for Coursera Developing Data Products</h2>
+    <p>Lik Sin<br/>Coursera Participant</p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Titanic App</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Choose your economic status (class), sex and age.<br>
+This application will tell you if you have survived the Titanic.  </p>
+
+<div style='text-align: center;'>
+    <img height='450' src='Projectapp.jpg' />
+</div>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Instructions</h2>
+  </hgroup>
+  <article data-timings="">
+    <ol>
+<li>Go to  <a href="https://liksin.shinyapps.io/Project">https://liksin.shinyapps.io/Project</a></li>
+<li>Wait for the app to load. App is ready when input parameters at the main panel shows user selection.</li>
+<li>Select your economic status (class) on the side panel</li>
+<li>Select your gender on the side panel</li>
+<li>Select your age on the side panel</li>
+<li>On the &#39;Input parameters&#39; tab of the main panel, check that your selections are correct</li>
+<li>Based on your selected parameters, the app run them against a random forest prediction model and  generate your survivability</li>
+<li>Check out the &#39;Server calculations and outputs&#39; tab for details on the cross validation of the prediction model</li>
+<li>Check out &#39;Documentation and Codes&#39; tab for instructions and full documentation of the code used</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>How it works</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Data from Titanic dataset is first pre-processed</li>
+</ul>
+
+<pre><code class="r">data=data.frame(Titanic)
+flatdata=NULL
+for(i in 1:4)
+{
+    flatdata=cbind(flatdata,rep(as.character(data[,i]),data$Freq))
+}
+flatdata=data.frame(flatdata)
+names(flatdata)=names(data[1:4])
+</code></pre>
+
+<ul>
+<li>And split into training and test data sets</li>
+</ul>
+
+<pre><code class="r">set.seed(150)
+inTrain = createDataPartition(flatdata$Survived, p = 0.70,list=FALSE)
+trainingset = flatdata[inTrain,]
+testset = flatdata[-inTrain,]
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Modelling and results</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Generating random forest prediction model</li>
+</ul>
+
+<pre><code class="r">modFit=train(Survived ~ ., data=trainingset, model=&quot;rf&quot;)
+</code></pre>
+
+<ul>
+<li>Applying prediction model to test data set</li>
+</ul>
+
+<pre><code class="r">predval &lt;- predict(modFit, newdata=testset)
+table(predval,testset$Survived)
+</code></pre>
+
+<pre><code>##        
+## predval  No Yes
+##     No  439 130
+##     Yes   8  83
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Titanic App'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Instructions'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='How it works'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Modelling and results'>
+         4
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
